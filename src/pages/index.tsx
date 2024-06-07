@@ -8,9 +8,8 @@ export default function Home() {
       formData.append("file", file);
 
       try {
-        await axios.post("/api/upload", {
-          body: formData,
-        });
+        console.log(file);
+        await axios.post("/api/upload", formData);
         alert("성공");
       } catch (error) {
         console.log(error);

@@ -16,16 +16,12 @@ const upload = multer({
   },
 }).single("file");
 
-router.use((req, res, next) => {
-  console.log("Request received");
-  next();
-});
-
 router.use(upload as any);
 
 router.post(async (req, res) => {
   const originalFile = req.file;
 
+  console.log(originalFile);
   res.status(200).json({ name: "John Doe" });
 });
 
