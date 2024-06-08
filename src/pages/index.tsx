@@ -12,8 +12,6 @@ export default function Home() {
     const file = e.target.files?.[0];
     if (file) {
       try {
-        // console.log(file.name);
-        // const formData = new FormData();
         const {
           data: { url },
         } = await axios.get("/api/signed-url", {
