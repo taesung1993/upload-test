@@ -2,6 +2,10 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { GetSignedUrlConfig, Storage } from "@google-cloud/storage";
 
+type Data = {
+  name: string;
+};
+
 const storage = new Storage({
   projectId: process.env.NEXT_PUBLIC_GCP_PROJECT_ID,
   credentials: {
@@ -10,27 +14,17 @@ const storage = new Storage({
   },
 });
 
-type Data = {
-  url: string;
-};
-
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
-  const fileName = req.query.fileName as string;
-  const options: GetSignedUrlConfig = {
-    version: "v4",
-    action: "write",
-    expires: Date.now() + 15 * 60 * 1000, // 15 minutes
-    contentType: "application/octet-stream",
-  };
+  const fileName = req.body.fileName as string;
 
   const file = storage
     .bucket(process.env.NEXT_PUBLIC_GCO_BUCKET_NAME!)
     .file(fileName);
 
-  const [url] = await file.getSignedUrl(options);
+  await file.makePrivate();
 
-  res.status(200).json({ url });
+  res.status(200).json({ name: "John Doe" });
 }

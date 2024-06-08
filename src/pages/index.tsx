@@ -29,7 +29,10 @@ export default function Home() {
           }
         );
 
-        console.log(data);
+        await axios.post("/api/private", {
+          fileName: file.name,
+        });
+
         alert("성공");
       } catch (error) {
         console.log(error);
