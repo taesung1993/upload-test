@@ -1,15 +1,37 @@
 import axios from "axios";
+import pako from "pako";
+
+const compressFile = async (file: File): Promise<Blob> => {
+  const arrayBuffer = await file.arrayBuffer();
+  const compressed = pako.gzip(new Uint8Array(arrayBuffer));
+  return new Blob([compressed], { type: "application/gzip" });
+};
 
 export default function Home() {
   const onChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const formData = new FormData();
-      formData.append("file", file);
-
       try {
-        console.log(file);
-        await axios.post("/api/upload", formData);
+        // console.log(file.name);
+        // const formData = new FormData();
+        const {
+          data: { url },
+        } = await axios.get("/api/signed-url", {
+          params: {
+            fileName: file.name,
+          },
+        });
+        const { data } = await axios.put(
+          url.replace("https://storage.googleapis.com", "/api/gcp"),
+          file,
+          {
+            headers: {
+              "Content-Type": "application/octet-stream",
+            },
+          }
+        );
+
+        console.log(data);
         alert("성공");
       } catch (error) {
         console.log(error);

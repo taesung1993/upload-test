@@ -29,6 +29,7 @@ export const config = {
   api: {
     bodyParser: false,
   },
+  supportsResponseStreaming: true,
 };
 
 export default router.handler({
